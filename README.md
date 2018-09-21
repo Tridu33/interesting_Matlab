@@ -1,4 +1,4 @@
-# Matlab_Notebook
+# Matlab_interesting
 
 
 collect(f)     合并符号表达式的同类项 
