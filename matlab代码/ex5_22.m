@@ -1,0 +1,23 @@
+x=linspace(0,3*pi,100);
+Z=[sin(x);sin(2*x);sin(2*x)];
+Y=[zeros(size(x));ones(size(x))/2;ones(size(x))];
+subplot(2,2,1)
+plot3(x,Y,Z)
+grid,xlabel('X-axis'),ylabel('Y-axis'),zlabel('Z-axis')
+title('DefaultAz=-37.5,El=30')
+view(-37.5,30)
+subplot(2,2,2)
+plot3(x,Y,Z)
+grid,xlabel('X-axis'),ylabel('Y-axis'),zlabel('Z-axis')
+title('Az Rotated to 52.5')
+view(-37.5+90,30)
+subplot(2,2,3)
+plot3(x,Y,Z)
+grid,xlabel('X-axis'),ylabel('Y-axis'),zlabel('Z-axis')
+title('El Increased to 60')
+view(-37.5,60)
+subplot(2,2,4)
+plot3(x,Y,Z)
+grid,xlabel('X-axis'),ylabel('Y-axis')
+title('Az=0,El=90')
+view(0,90)

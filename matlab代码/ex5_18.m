@@ -1,0 +1,14 @@
+[x,y]=meshgrid(-8:0.5:8);
+z=sin(sqrt(x.^2+y.^2))./sqrt(x.^2+y.^2+eps);
+subplot(2,2,1);
+mesh(x,y,z);
+title('mesh(x,y,z)')
+subplot(2,2,2);
+meshc(x,y,z);
+title('meshc(x,y,z)')
+subplot(2,2,3);
+meshz(x,y,z)
+title('meshz(x,y,z)')
+subplot(2,2,4);
+surf(x,y,z);
+title('surf(x,y,z)')

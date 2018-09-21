@@ -1,0 +1,389 @@
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>1D, 2D and 3D Box-counting</title>
+      <meta name="generator" content="MATLAB 7.2">
+      <meta name="date" content="2006-11-21">
+      <meta name="m-file" content="demo"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows.  On Gecko-based browsers, the shrink-to-fit doesn't work. */ 
+p,h1,h2,div.content div {
+  /* for MATLAB's browser */
+  width: 600px;
+  /* for Mozilla, but the "width" tag overrides it anyway */
+  max-width: 600px;
+  /* for IE */
+  width:expression(document.body.clientWidth > 620 ? "600px": "auto" );
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h1>1D, 2D and 3D Box-counting</h1>
+         <introduction>
+            <p>F. Moisy, 22 nov 2006 FAST, Univ. Paris Sud, CNRS UMR 7608</p>
+         </introduction>
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">About boxcount</a></li>
+               <li><a href="#2">Box-counting of a 2D image</a></li>
+               <li><a href="#6">Local scaling exponent</a></li>
+               <li><a href="#10">Box-counting of a natural image.</a></li>
+               <li><a href="#14">Generalized random Cantor sets</a></li>
+               <li><a href="#18">1D random Cantor set</a></li>
+               <li><a href="#19">3D random Cantor set</a></li>
+            </ul>
+         </div>
+         <h2>About boxcount<a name="1"></a></h2>
+         <p>This file illustrates how to use the function 'boxcount' to compute the fractal dimension of 1D, 2D or 3D sets, using the
+            'box-counting' method (Minkowski-Bouligand dimension, or Kolmogorov capacity, or Kolmogorov dimension, or simply box-counting
+            dimension).
+         </p>
+         <p>Three sample images are provided in the directory,  and an additional function 'randcantor' to generate 1D, 2D and 3D generalized
+            random Cantor sets.
+         </p>
+         <p>Type 'help boxcount' or 'help randcantor' for more details.</p>
+         <p>To learn more about box-counting, fractals and fractal dimensions: - <a href="http://en.wikipedia.org/wiki/Fractal">http://en.wikipedia.org/wiki/Fractal</a> - <a href="http://en.wikipedia.org/wiki/Box_counting_dimension">http://en.wikipedia.org/wiki/Box_counting_dimension</a> - <a href="http://mathworld.wolfram.com/Fractal.html">http://mathworld.wolfram.com/Fractal.html</a> - <a href="http://mathworld.wolfram.com/CapacityDimension.html">http://mathworld.wolfram.com/CapacityDimension.html</a></p>
+         <h2>Box-counting of a 2D image<a name="2"></a></h2>
+         <p>Let's start with the image 'dla.gif', a 800x800 logical array (i.e., it contains only 0 and 1). It originates from a numerical
+            simulation of a "Diffusion Limited Aggregation" process, in which particles move randomly until they hit a central seed. (see
+            P. Bourke, <a href="http://local.wasp.uwa.edu.au/~pbourke/fractals/dla/">http://local.wasp.uwa.edu.au/~pbourke/fractals/dla/</a>)
+         </p><pre class="codeinput">c = imread(<span class="string">'dla.gif'</span>);
+imagesc(~c)
+colormap <span class="string">gray</span>
+axis <span class="string">square</span>
+</pre><img vspace="5" hspace="5" src="demo_01.png"> <p>Calling boxcount without output arguments simply displays N (the number of boxes needed to cover the set) as a function of
+            R (the size of the boxes). If the set is a fractal, then a power-law  N = N0 * R^(-DF) should appear, with DF the fractal
+            dimension (Kolmogorov capacity).
+         </p><pre class="codeinput">boxcount(c)
+</pre><img vspace="5" hspace="5" src="demo_02.png"> <p>The result of the box count can be obtained using:</p><pre class="codeinput">[n, r] = boxcount(c)
+loglog(r, n,<span class="string">'bo-'</span>, r, (r/r(end)).^(-2), <span class="string">'r--'</span>)
+xlabel(<span class="string">'r'</span>)
+ylabel(<span class="string">'n(r)'</span>)
+legend(<span class="string">'actual box-count'</span>,<span class="string">'space-filling box-count'</span>);
+</pre><pre class="codeoutput">
+n =
+
+  Columns 1 through 7 
+
+       44000       27466       11786        4265        1386         421         121
+
+  Columns 8 through 11 
+
+          37          12           4           1
+
+
+r =
+
+  Columns 1 through 7 
+
+           1           2           4           8          16          32          64
+
+  Columns 8 through 11 
+
+         128         256         512        1024
+
+</pre><img vspace="5" hspace="5" src="demo_03.png"> <p>The red dotted line shows the scaling N(R) = R^-2 for comparision, expected for a space-filling 2D image. The discrepancy
+            between the two curves indicates a possible fractal behaviour.
+         </p>
+         <h2>Local scaling exponent<a name="6"></a></h2>
+         <p>If the set has some fractal properties over a limited range of box size R, this may be appreciated by plotting the local exponent,
+            D(R) = - d ln N / ln R.  For this, use the option 'slope':
+         </p><pre class="codeinput">boxcount(c, <span class="string">'slope'</span>)
+</pre><img vspace="5" hspace="5" src="demo_04.png"> <p>Strictly speaking, the local exponent is not constant, but lies in the range [1.6 1.8].</p>
+         <p>Let's try now with another image, the so-called Apollonian gasket (Wikipedia, <a href="http://en.wikipedia.org/wiki/Image:Apollonian_gasket.gif)">http://en.wikipedia.org/wiki/Image:Apollonian_gasket.gif)</a>. The background level is 198 for this image, so this value is used to binarize the image:
+         </p><pre class="codeinput">c = imread(<span class="string">'Apollonian_gasket.gif'</span>);
+c = (c&lt;198);
+imagesc(~c)
+colormap <span class="string">gray</span>
+axis <span class="string">square</span>
+figure
+boxcount(c)
+figure
+boxcount(c,<span class="string">'slope'</span>)
+</pre><img vspace="5" hspace="5" src="demo_05.png"> <img vspace="5" hspace="5" src="demo_06.png"> <img vspace="5" hspace="5" src="demo_07.png"> <p>The local slope shows that the image is indeed approximately fractal, with a fractal dimension DF = 1.4 +/- 0.1 for scales
+            R &lt; 100.
+         </p>
+         <h2>Box-counting of a natural image.<a name="10"></a></h2>
+         <p>Consider now this RGB (2272x1704) picture of a tree (J.A. Adam, <a href="http://epod.usra.edu/archive/images/fractal_tree.jpg)">http://epod.usra.edu/archive/images/fractal_tree.jpg)</a>:
+         </p><pre class="codeinput">c = imread(<span class="string">'fractal_tree.jpg'</span>);
+image(c)
+axis <span class="string">image</span>
+</pre><img vspace="5" hspace="5" src="demo_08.png"> <p>Let's extract a rectangle in the blue (3rd) plane, and binarize the image for levels &lt; 80 (white pixels are logical 'true'):</p><pre class="codeinput">i = c(1:1200, 120:2150, 3);
+bi = (i&lt;80);
+imagesc(bi)
+colormap <span class="string">gray</span>
+axis <span class="string">image</span>
+</pre><img vspace="5" hspace="5" src="demo_09.png"> <pre class="codeinput">[n,r] = boxcount(bi,<span class="string">'slope'</span>);
+</pre><img vspace="5" hspace="5" src="demo_10.png"> <p>The boxcount shows that the local exponent is approximately constant for less than one decade, in the range 8 &lt; R &lt; 128 (the
+            'exact' value of Df depends on the threshold, 80 gray levels here):
+         </p><pre class="codeinput">df = -diff(log(n))./diff(log(r));
+disp([<span class="string">'Fractal dimension, Df = '</span> num2str(mean(df(4:8))) <span class="string">' +/- '</span> num2str(std(df(4:8)))]);
+</pre><pre class="codeoutput">Fractal dimension, Df = 1.801 +/- 0.06394
+</pre><h2>Generalized random Cantor sets<a name="14"></a></h2>
+         <p>Fractal sets may be obtained from an IFS (iterated function system). For example, the function 'randcantor' generates a 1D,
+            2D or 3D generalized random Cantor set. This set is obtained by iteratively dividing an initial set filled with 1 into 2^D
+            subsets, and setting each subset to 0 with probability P. The result is a fractal set (or "fractal dust") of dimension DF
+            = D + log(P)/log(2) &lt; D.
+         </p>
+         <p>The following example generates a 2048x2048 image with probability P=0.8, i.e. fractal dimension DF = 1.678.</p><pre class="codeinput">c = randcantor(0.8, 2048, 2);
+imagesc(~c)
+colormap <span class="string">gray</span>
+axis <span class="string">image</span>
+</pre><img vspace="5" hspace="5" src="demo_11.png"> <p>Let's see its box-count and local exponent</p><pre class="codeinput">boxcount(c)
+figure
+boxcount(c, <span class="string">'slope'</span>)
+</pre><img vspace="5" hspace="5" src="demo_12.png"> <img vspace="5" hspace="5" src="demo_13.png"> <p>For such set generated by an iterated scheme, the local slope shows as expected a well defined plateau, around DF = 1.68.</p>
+         <h2>1D random Cantor set<a name="18"></a></h2>
+         <p>1D random Cantor sets may also be generated. Here, a 2^18 = 262144 long set with P = 0.9 and expected fractal dimension DF
+            = 1 + log(P)/log(2) = 0.848:
+         </p><pre class="codeinput">tic
+c = randcantor(0.9, 2^18, 1, <span class="string">'show'</span>);
+figure
+boxcount(c, <span class="string">'slope'</span>);
+toc
+</pre><pre class="codeoutput">Elapsed time is 3.538424 seconds.
+</pre><img vspace="5" hspace="5" src="demo_14.png"> <img vspace="5" hspace="5" src="demo_15.png"> <h2>3D random Cantor set<a name="19"></a></h2>
+         <p>Now a 3D random Cantor set of size (2^7)^3 = 128^3 with P = 0.7 and expected fractal dimension DF = 3 + log(P)/log(2) = 2.485
+            (no display for 3D sets):
+         </p><pre class="codeinput">tic
+c = randcantor(0.7, 2^7, 3);
+toc
+tic
+boxcount(c, <span class="string">'slope'</span>);
+toc
+</pre><pre class="codeoutput">Elapsed time is 8.068590 seconds.
+Elapsed time is 0.360902 seconds.
+</pre><img vspace="5" hspace="5" src="demo_16.png"> <p class="footer"><br>
+            Published with MATLAB&reg; 7.2<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% 1D, 2D and 3D Box-counting
+% F. Moisy, 22 nov 2006
+% FAST, Univ. Paris Sud, CNRS UMR 7608
+
+%% About boxcount
+% This file illustrates how to use the function 'boxcount' to compute the
+% fractal dimension of 1D, 2D or 3D sets, using the 'box-counting' method
+% (Minkowski-Bouligand dimension, or Kolmogorov capacity, or Kolmogorov
+% dimension, or simply box-counting dimension).
+%
+% Three sample images are provided in the directory,  and an additional
+% function 'randcantor' to generate 1D, 2D and 3D generalized random Cantor
+% sets.
+%
+% Type 'help boxcount' or 'help randcantor' for more details.
+%
+% To learn more about box-counting, fractals and fractal dimensions:
+% - http://en.wikipedia.org/wiki/Fractal 
+% - http://en.wikipedia.org/wiki/Box_counting_dimension
+% - http://mathworld.wolfram.com/Fractal.html
+% - http://mathworld.wolfram.com/CapacityDimension.html
+
+
+%% Box-counting of a 2D image
+% Let's start with the image 'dla.gif', a 800x800 logical array (i.e., it
+% contains only 0 and 1). It originates from a numerical simulation of a
+% "Diffusion Limited Aggregation" process, in which particles move randomly
+% until they hit a central seed.
+% (see P. Bourke, http://local.wasp.uwa.edu.au/~pbourke/fractals/dla/)
+
+c = imread('dla.gif');
+imagesc(~c)
+colormap gray
+axis square
+
+%%
+% Calling boxcount without output arguments simply displays N (the number
+% of boxes needed to cover the set) as a function of R (the size of the
+% boxes). If the set is a fractal, then a power-law  N = N0 * R^(-DF)
+% should appear, with DF the fractal dimension (Kolmogorov capacity).
+
+boxcount(c)
+
+%%
+% The result of the box count can be obtained using:
+
+[n, r] = boxcount(c)
+loglog(r, n,'bo-', r, (r/r(end)).^(-2), 'rREPLACE_WITH_DASH_DASH')
+xlabel('r')
+ylabel('n(r)')
+legend('actual box-count','space-filling box-count');
+
+%%
+% The red dotted line shows the scaling N(R) = R^-2 for comparision,
+% expected for a space-filling 2D image. The discrepancy between the two
+% curves indicates a possible fractal behaviour.
+
+
+%% Local scaling exponent
+% If the set has some fractal properties over a limited range of box size
+% R, this may be appreciated by plotting the local exponent,
+% D(R) = - d ln N / ln R.  For this, use the option 'slope':
+
+boxcount(c, 'slope')
+
+%%
+% Strictly speaking, the local exponent is not constant, but lies in the
+% range [1.6 1.8].
+
+%%
+% Let's try now with another image, the so-called Apollonian gasket
+% (Wikipedia, http://en.wikipedia.org/wiki/Image:Apollonian_gasket.gif).
+% The background level is 198 for this image, so this value is used to
+% binarize the image:
+
+c = imread('Apollonian_gasket.gif');
+c = (c<198);
+imagesc(~c)
+colormap gray
+axis square
+figure
+boxcount(c)
+figure
+boxcount(c,'slope')
+
+%%
+% The local slope shows that the image is indeed approximately fractal,
+% with a fractal dimension DF = 1.4 +/- 0.1 for scales R < 100.
+
+
+%% Box-counting of a natural image.
+% Consider now this RGB (2272x1704) picture of a tree (J.A. Adam,
+% http://epod.usra.edu/archive/images/fractal_tree.jpg):
+c = imread('fractal_tree.jpg');
+image(c)
+axis image
+
+%%
+% Let's extract a rectangle in the blue (3rd) plane, and binarize the
+% image for levels < 80 (white pixels are logical 'true'):
+
+i = c(1:1200, 120:2150, 3);
+bi = (i<80);
+imagesc(bi)
+colormap gray
+axis image
+
+%%
+
+[n,r] = boxcount(bi,'slope');
+
+%%
+% The boxcount shows that the local exponent is approximately constant for
+% less than one decade, in the range 8 < R < 128 (the 'exact' value of Df
+% depends on the threshold, 80 gray levels here):
+
+df = -diff(log(n))./diff(log(r));
+disp(['Fractal dimension, Df = ' num2str(mean(df(4:8))) ' +/- ' num2str(std(df(4:8)))]);
+
+
+%% Generalized random Cantor sets
+% Fractal sets may be obtained from an IFS (iterated function system).
+% For example, the function 'randcantor' generates a 1D, 2D or 3D
+% generalized random Cantor set. This set is obtained by iteratively
+% dividing an initial set filled with 1 into 2^D subsets, and setting each
+% subset to 0 with probability P. The result is a fractal set (or "fractal
+% dust") of dimension DF = D + log(P)/log(2) < D.
+
+%%
+% The following example generates a 2048x2048 image with probability P=0.8,
+% i.e. fractal dimension DF = 1.678.
+
+c = randcantor(0.8, 2048, 2);
+imagesc(~c)
+colormap gray
+axis image
+
+%%
+% Let's see its box-count and local exponent
+
+boxcount(c)
+figure
+boxcount(c, 'slope')
+
+%%
+% For such set generated by an iterated scheme, the local slope shows as
+% expected a well defined plateau, around DF = 1.68.
+
+%% 1D random Cantor set
+% 1D random Cantor sets may also be generated. Here, a 2^18 = 262144 long
+% set with P = 0.9 and expected fractal dimension DF = 1 + log(P)/log(2) =
+% 0.848:
+
+tic
+c = randcantor(0.9, 2^18, 1, 'show');
+figure
+boxcount(c, 'slope');
+toc
+
+%% 3D random Cantor set
+% Now a 3D random Cantor set of size (2^7)^3 = 128^3 with P = 0.7 and
+% expected fractal dimension DF = 3 + log(P)/log(2) = 2.485 (no display
+% for 3D sets):
+
+tic
+c = randcantor(0.7, 2^7, 3);
+toc
+tic
+boxcount(c, 'slope');
+toc
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

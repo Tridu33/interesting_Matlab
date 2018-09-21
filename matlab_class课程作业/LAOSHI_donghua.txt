@@ -1,0 +1,24 @@
+clear;clc;
+R=1,L=2;H=0.5;
+th=linspace(0.50*pi,100);
+for k=1:length(th)
+	thk=th(k);
+	xAk=R*cos(thk);
+	yAk=R*sin(thk);
+	xBk=xAk+sqrt(L^2-(yAk-H)^2);
+	yBk=H;
+	yok=0;
+	xok=0;
+	plot(xok,yok,'ko');
+	hold on;
+	plot(xAk,yAk,'ko');
+	plot(xBk,yBk,'ko');plot([xok,xAk,xBk],[yok,yAk,yBk],'r');
+	plot(xBk+[-1,1,1,-1,-1]*R*0.25,yBk+[1,1,-1,-1,1]*0.20*R.'b');
+	plot([R/2,L+R*/2],(yBk-0.20*R)*[1,1],'m');
+	axis on;
+	hold off;
+	pause(0.01);
+	axis([-R,R+L,-R,]*1.2);
+	box off;
+	
+end

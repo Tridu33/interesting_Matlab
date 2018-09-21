@@ -1,0 +1,37 @@
+clear,closeall clc a=5; b=7; c=10; d=4;%这里输入需要计算的四个数字a,b,c,d f=[a b c d]; tic;g=perms(f); 
+[m,n]=size(g); 
+h='+-*/'; 
+fori=1:24 
+for k1=1:4 
+    for k2=1:4
+        for k3=1:4 
+            str11=[num2str(g(i,1)),h(k1),num2str(g(i,2)),h(k2),num2str(g(i,3)),h(k3 ),num2str(g(i,4))]; 
+            str22=['(',num2str(g(i,1)),h(k1),num2str(g(i,2)),')',h(k2),num2str(g(i, 3)),h(k3),num2str(g(i,4))];
+            str33=['(',num2str(g(i,1)),h(k1),num2str(g(i,2)),h(k2),num2str(g(i,3)), ')',h(k3),num2str(g(i,4))]; 
+            str44=['(',num2str(g(i,1)),h(k1),num2str(g(i,2)),')',h(k2),'(',num2str( g(i,3)),h(k3),num2str(g(i,4)),')',]; 
+            A=str2num(str11); B=str2num(str22); C=str2num(str33); D=str2num(str44);
+            if A==24||B==24||C==24||D==24
+            break 
+            else
+            end
+        end
+        if A==24||B==24||C==24||D==24 break
+        else
+        end
+    end
+    if A==24||B==24||C==24||D==24
+        break
+    else
+    end
+end
+if A==24||B==24||C==24||D==24 
+    break 
+else
+end
+end
+if A==24 answer=str11; 
+elseif B==24 answer=str22;
+elseif C==24 answer=str33;
+elseif D==24 answer=str44;
+else answer='无解'; 
+end disp(['计算方法',num2str(answer)]) time=toc; disp(['计算耗时',num2str(time),'s'])

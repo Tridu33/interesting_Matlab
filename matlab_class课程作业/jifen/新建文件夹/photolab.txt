@@ -1,0 +1,10 @@
+%matlab_PÍ¼Æ¬
+A=imread('41161429Ú÷Î°¶Å.jpg');
+B=rgb2gray(A);
+imshow(B);
+print(gcf,'-dpng','41161429Ú÷Î°¶Å.png') 
+pause(1);
+
+
+
+close all;

@@ -1,0 +1,20 @@
+%%主调用main
+
+clear all;
+close all;
+clc;
+photolab%调用photoshop子模块
+schoolsong_of_JLU;%song子模块
+movie;%movie子模块
+disp("have fun!");
+pause(0.5);
+close all;
+clear all;
+
+
+
+
+
+
+
+

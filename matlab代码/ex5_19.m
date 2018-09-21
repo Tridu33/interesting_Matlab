@@ -1,0 +1,10 @@
+t=0:pi/20:2*pi;
+[x,y,z]= cylinder(2+sin(t),30);
+subplot(2,2,1);
+surf(x,y,z);
+subplot(2,2,2);
+[x,y,z]=sphere;
+surf(x,y,z);
+subplot(2,1,2);
+[x,y,z]=peaks(30); 
+surf(x,y,z);

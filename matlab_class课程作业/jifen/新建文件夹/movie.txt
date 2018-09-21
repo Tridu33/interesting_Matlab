@@ -1,0 +1,38 @@
+%%驻波可视化
+
+clear all;
+t=0:0.08:6;
+x=0:0.08:6;
+M=moviein(48);
+N=moviein(48);
+for i=1:48
+    y1=cos(2*pi*(t(i)-x/5))+cos(2*pi*(t(i)+x/5));
+    y2=cos(2*pi*(t-x(i)/5))+cos(2*pi*(t+x(i)/5));
+    subplot(211)
+    plot(x,y1);
+    title('驻波可视化');
+    axis([0,6,-4,4]); 
+    xlabel('位置\itX');
+    ylabel('振幅\itY');
+    subplot(212)
+    plot(t,y2);
+    axis([0,6,-3,3]); 
+    xlabel('时间\itT');
+    ylabel('振幅\itY');
+    M(:,i)=getframe;
+    N(:,i)=getframe;
+end
+myVideo = VideoWriter('myfile.avi');
+open(myVideo);
+writeVideo(myVideo, M);
+close(myVideo);%动画N同理
+[T,X] = meshgrid(t,x);
+Y=cos(2*pi*(T-X/5))+cos(2*pi*(T+X/5));
+figure
+surf(X,T,Y);
+title('驻波可视化');
+xlabel('x');
+ylabel('t');
+zlabel('y');
+pause(5);
+close all
